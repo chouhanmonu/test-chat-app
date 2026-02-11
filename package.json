@@ -1,0 +1,24 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "- login with email (should register user if not there)     - chat         dm         group         reply to a message         react with emoji         text message with attachment         mute notification         block         clear chat         add to starred messages         roles (group admin, member)         forward message         search message         view shared media         received/seen         e2ee     - favourite contacts         add / move     - settings         profile             name             avator             alternate email (should be verified)             mobile (don't require verification)         account             change email             delete account",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm --prefix backend run start:dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test:backend": "npm --prefix backend run test",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

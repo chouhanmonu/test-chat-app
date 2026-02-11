@@ -1,0 +1,33 @@
+# Node
+node_modules/
+
+# Build
+backend/dist/
+frontend/dist/
+
+# Env
+.env
+backend/.env
+frontend/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+
+# Redis
+*.rdb
+
+# Coverage
+coverage/
+
+# Vite
+frontend/.vite/
+
+# IDE
+.vscode/
+.idea/
+

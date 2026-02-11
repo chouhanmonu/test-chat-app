@@ -1,0 +1,23 @@
+export default () => ({
+  nodeEnv: process.env.NODE_ENV ?? 'development',
+  port: parseInt(process.env.PORT ?? '4000', 10),
+  appUrl: process.env.APP_URL ?? 'http://localhost:5173',
+  mongoUri: process.env.MONGO_URI ?? 'mongodb://localhost:27017/chat-app',
+  redisUrl: process.env.REDIS_URL ?? 'redis://localhost:6379',
+  jwtAccessSecret: process.env.JWT_ACCESS_SECRET ?? 'change_me',
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET ?? 'change_me',
+  jwtAccessTtl: process.env.JWT_ACCESS_TTL ?? '900s',
+  jwtRefreshTtl: process.env.JWT_REFRESH_TTL ?? '7d',
+  throttleTtl: parseInt(process.env.THROTTLE_TTL ?? '60', 10),
+  throttleLimit: parseInt(process.env.THROTTLE_LIMIT ?? '120', 10),
+  doSpacesRegion: process.env.DO_SPACES_REGION ?? 'nyc3',
+  doSpacesEndpoint: process.env.DO_SPACES_ENDPOINT ?? 'https://nyc3.digitaloceanspaces.com',
+  doSpacesBucket: process.env.DO_SPACES_BUCKET ?? 'chat-app',
+  doSpacesKey: process.env.DO_SPACES_KEY ?? '',
+  doSpacesSecret: process.env.DO_SPACES_SECRET ?? '',
+  mailHost: process.env.MAIL_HOST ?? '',
+  mailPort: parseInt(process.env.MAIL_PORT ?? '587', 10),
+  mailUser: process.env.MAIL_USER ?? '',
+  mailPass: process.env.MAIL_PASS ?? '',
+  mailFrom: process.env.MAIL_FROM ?? 'Chat App <no-reply@example.com>'
+});
