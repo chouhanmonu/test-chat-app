@@ -5,6 +5,15 @@ export type RoomDocument = HydratedDocument<Room>;
 
 @Schema({ _id: false })
 @Schema({ _id: false })
+export class RoomMemberKey {
+  @Prop({ required: true })
+  deviceId!: string;
+
+  @Prop({ required: true })
+  key!: string;
+}
+
+@Schema({ _id: false })
 export class RoomMember {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId!: Types.ObjectId;
@@ -17,6 +26,9 @@ export class RoomMember {
 
   @Prop({ default: Date.now })
   joinedAt!: Date;
+
+  @Prop({ type: [RoomMemberKey], default: [] })
+  encryptedSecretKeys!: RoomMemberKey[];
 }
 
 @Schema({ timestamps: true })
@@ -24,7 +36,7 @@ export class Room {
   @Prop()
   name?: string;
 
-  @Prop({ required: true, enum: ['dm', 'group'], index: true })
+  @Prop({ required: true, enum: ['dm', 'group'] })
   type!: 'dm' | 'group';
 
   @Prop({ type: [RoomMember], default: [] })

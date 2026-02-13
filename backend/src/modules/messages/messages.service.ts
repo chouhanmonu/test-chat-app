@@ -34,6 +34,8 @@ export class MessagesService {
       userId: new Types.ObjectId(userId),
       roomId: new Types.ObjectId(dto.roomId),
       content: dto.content,
+      encryptedContent: dto.encryptedContent,
+      encryptionMetadata: dto.encryptionMetadata,
       replyingToMessageId: dto.replyingToMessageId ? new Types.ObjectId(dto.replyingToMessageId) : undefined,
       forwardedFromMessageId: dto.forwardedFromMessageId
         ? new Types.ObjectId(dto.forwardedFromMessageId)
@@ -56,7 +58,7 @@ export class MessagesService {
 
   async listMessages(userId: string, roomId: string) {
     await this.ensureMember(roomId, userId);
-    return this.messageModel.find({ roomId: new Types.ObjectId(roomId) }).sort({ createdAt: -1 }).exec();
+    return this.messageModel.find({ roomId: new Types.ObjectId(roomId) }).sort({ createdAt: 1 }).exec();
   }
 
   async react(userId: string, dto: ReactMessageDto) {
@@ -76,8 +78,9 @@ export class MessagesService {
       message.reactions.push({ userId: new Types.ObjectId(userId), emoji: dto.emoji });
     }
 
-    await message.save();
-    return message.toObject();
+    const saved = await message.save();
+    const roomId = saved.roomId.toString();
+    return { ...saved.toObject(), roomId };
   }
 
   async searchMessages(userId: string, dto: SearchMessageDto) {
@@ -87,7 +90,7 @@ export class MessagesService {
     return this.messageModel
       .find({ roomId: new Types.ObjectId(dto.roomId), ...query })
       .limit(50)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .exec();
   }
 

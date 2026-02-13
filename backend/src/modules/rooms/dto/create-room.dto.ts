@@ -1,6 +1,14 @@
 import { IsArray, IsEnum, IsMongoId, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
+class MemberKeyDto {
+  @IsString()
+  deviceId: string;
+
+  @IsString()
+  key: string;
+}
+
 class MemberDto {
   @IsMongoId()
   userId: string;
@@ -8,6 +16,12 @@ class MemberDto {
   @IsOptional()
   @IsEnum(['admin', 'member'])
   role?: 'admin' | 'member';
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MemberKeyDto)
+  encryptedSecretKeys?: MemberKeyDto[];
 }
 
 export class CreateRoomDto {

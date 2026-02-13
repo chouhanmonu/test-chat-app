@@ -30,6 +30,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket) {
     const token = client.handshake.auth?.token;
     if (!token) {
+      // eslint-disable-next-line no-console
+      console.log('[socket] missing token');
       client.disconnect();
       return;
     }
@@ -40,13 +42,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
 
       client.data.userId = payload.sub;
+      client.join(`user:${payload.sub}`);
       await this.presenceService.setOnline(payload.sub);
 
       const rooms = await this.roomsService.listRooms(payload.sub);
       rooms.forEach((room) => client.join(room._id.toString()));
 
       this.server.to(client.id).emit('connected', { userId: payload.sub });
-    } catch {
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('[socket] auth failed', error?.message ?? error);
       client.disconnect();
     }
   }
@@ -61,14 +66,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleSendMessage(@ConnectedSocket() client: Socket, @MessageBody() body: any) {
     const userId = client.data.userId;
     const message = await this.messagesService.sendMessage(userId, body);
-    this.server.to(message.roomId.toString()).emit('message:new', message);
+    const roomId = message.roomId.toString();
+    this.server.to(roomId).emit('message:new', { ...message, roomId });
+    const memberIds = await this.roomsService.getMemberIds(roomId);
+    memberIds.forEach((memberId) => {
+      this.server.to(`user:${memberId}`).emit('message:new', { ...message, roomId });
+    });
+    return { ...message, roomId };
   }
 
   @SubscribeMessage('message:react')
   async handleReaction(@ConnectedSocket() client: Socket, @MessageBody() body: any) {
     const userId = client.data.userId;
     const message = await this.messagesService.react(userId, body);
-    this.server.to(message.roomId.toString()).emit('message:reaction', message);
+    const roomId = message.roomId.toString();
+    this.server.to(roomId).emit('message:reaction', { ...message, roomId });
+    const memberIds = await this.roomsService.getMemberIds(roomId);
+    memberIds.forEach((memberId) => {
+      this.server.to(`user:${memberId}`).emit('message:reaction', { ...message, roomId });
+    });
+    return { ...message, roomId };
   }
 
   @SubscribeMessage('message:seen')
@@ -76,5 +93,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const userId = client.data.userId;
     await this.messagesService.updateSeen(userId, body.roomId, body.messageId);
     this.server.to(body.roomId).emit('message:seen', { userId, ...body });
+  }
+
+  @SubscribeMessage('room:join')
+  async handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() body: any) {
+    const userId = client.data.userId;
+    const allowed = await this.roomsService.isMember(body.roomId, userId);
+    if (!allowed) return;
+    client.join(body.roomId);
   }
 }

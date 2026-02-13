@@ -12,6 +12,10 @@ export class LoginDto {
   @IsNotEmpty()
   deviceId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  publicKey: string;
+
   @IsOptional()
   @IsString()
   deviceName?: string;

@@ -5,6 +5,7 @@ export type LoginPayload = {
   password: string;
   deviceId: string;
   deviceName?: string;
+  publicKey: string;
 };
 
 export type RegisterPayload = LoginPayload & { name: string };

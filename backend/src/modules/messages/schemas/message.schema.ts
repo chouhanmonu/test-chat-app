@@ -38,6 +38,11 @@ export class Message {
   @Prop()
   content?: string;
 
+  @Prop()
+  encryptedContent?: string;
+
+  @Prop()
+  encryptionMetadata?: string;
   @Prop({ type: Types.ObjectId, ref: 'Message' })
   replyingToMessageId?: Types.ObjectId;
 
@@ -64,4 +69,4 @@ export const MessageSchema = SchemaFactory.createForClass(Message);
 MessageSchema.index({ roomId: 1, createdAt: -1 });
 MessageSchema.index({ userId: 1 });
 MessageSchema.index({ replyingToMessageId: 1 });
-MessageSchema.index({ content: 'text' });
+MessageSchema.index({ content: 'text', encryptedContent: 'text' });

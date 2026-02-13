@@ -27,4 +27,15 @@ export class MailService {
       text: `Verify your alternate email for ${primaryEmail}. If you did not request this, ignore this message.`
     });
   }
+
+  async sendInviteEmail(inviterEmail: string, inviteeEmail: string) {
+    const from = this.config.get<string>('mailFrom');
+    const appUrl = this.config.get<string>('appUrl') ?? 'http://localhost:5173';
+    await this.transporter.sendMail({
+      from,
+      to: inviteeEmail,
+      subject: 'You have been invited to Chat App',
+      text: `${inviterEmail} invited you to join Chat App. Sign up here: ${appUrl}`
+    });
+  }
 }

@@ -5,6 +5,7 @@ import { login } from '../../api/auth';
 import { setAuthToken } from '../../api/axios';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
+import { ensureKeyPair } from '../../utils/crypto';
 
 const getDeviceId = () => {
   const existing = localStorage.getItem('deviceId');
@@ -29,11 +30,13 @@ export const Login = () => {
     }
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const { publicKey } = await ensureKeyPair();
     mutation.mutate({
       email,
       password,
-      deviceId: getDeviceId()
+      deviceId: getDeviceId(),
+      publicKey
     });
   };
 

@@ -5,12 +5,14 @@ export const MessageList = ({
   messages,
   currentUserId,
   onReact,
-  onReply
+  onReply,
+  decryptedMap
 }: {
   messages: Message[];
   currentUserId: string;
   onReact: (messageId: string, emoji: string) => void;
   onReply: (messageId: string) => void;
+  decryptedMap?: Record<string, string>;
 }) => {
   return (
     <VStack spacing={4} align="stretch">
@@ -21,6 +23,7 @@ export const MessageList = ({
           isOwn={message.userId === currentUserId}
           onReact={onReact}
           onReply={onReply}
+          decryptedContent={decryptedMap?.[message._id]}
         />
       ))}
     </VStack>

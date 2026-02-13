@@ -26,6 +26,14 @@ export class SendMessageDto {
   content?: string;
 
   @IsOptional()
+  @IsString()
+  encryptedContent?: string;
+
+  @IsOptional()
+  @IsString()
+  encryptionMetadata?: string;
+
+  @IsOptional()
   @IsMongoId()
   replyingToMessageId?: string;
 

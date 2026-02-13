@@ -32,6 +32,7 @@ export class AuthService {
         {
           deviceId: dto.deviceId,
           deviceName: dto.deviceName,
+          publicKey: dto.publicKey,
           registeredAt: new Date(),
           lastSeenAt: new Date(),
           isActive: true
@@ -52,6 +53,7 @@ export class AuthService {
     await this.usersService.addDevice(user._id.toString(), {
       deviceId: dto.deviceId,
       deviceName: dto.deviceName,
+      publicKey: dto.publicKey,
       registeredAt: new Date(),
       lastSeenAt: new Date(),
       isActive: true

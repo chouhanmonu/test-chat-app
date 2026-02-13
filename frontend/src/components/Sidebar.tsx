@@ -4,6 +4,7 @@ export type Room = {
   _id: string;
   name?: string;
   type: 'dm' | 'group';
+  displayName?: string;
 };
 
 type SidebarProps = {
@@ -41,9 +42,11 @@ export const Sidebar = ({ rooms, favourites, onSelect, onNewChat }: SidebarProps
             key={room._id}
             variant="ghost"
             justifyContent="flex-start"
+            color="gray.100"
+            _hover={{ bg: 'whiteAlpha.200' }}
             onClick={() => onSelect(room)}
           >
-            {room.name ?? 'Direct Message'}
+            {room.displayName ?? room.name ?? 'Direct Message'}
           </Button>
         ))}
       </Stack>
@@ -63,9 +66,11 @@ export const Sidebar = ({ rooms, favourites, onSelect, onNewChat }: SidebarProps
             key={room._id}
             variant="ghost"
             justifyContent="flex-start"
+            color="gray.100"
+            _hover={{ bg: 'whiteAlpha.200' }}
             onClick={() => onSelect(room)}
           >
-            {room.name ?? 'Direct Message'}
+            {room.displayName ?? room.name ?? 'Direct Message'}
           </Button>
         ))}
       </Stack>

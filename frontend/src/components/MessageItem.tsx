@@ -4,6 +4,8 @@ export type Message = {
   _id: string;
   userId: string;
   content?: string;
+  encryptedContent?: string;
+  encryptionMetadata?: string;
   attachments?: { fileName: string; url: string }[];
   reactions?: { userId: string; emoji: string }[];
   replyingToMessageId?: string;
@@ -15,9 +17,16 @@ type MessageItemProps = {
   isOwn: boolean;
   onReact: (messageId: string, emoji: string) => void;
   onReply: (messageId: string) => void;
+  decryptedContent?: string;
 };
 
-export const MessageItem = ({ message, isOwn, onReact, onReply }: MessageItemProps) => {
+export const MessageItem = ({
+  message,
+  isOwn,
+  onReact,
+  onReply,
+  decryptedContent,
+}: MessageItemProps) => {
   return (
     <Box
       alignSelf={isOwn ? 'flex-end' : 'flex-start'}
@@ -37,6 +46,9 @@ export const MessageItem = ({ message, isOwn, onReact, onReply }: MessageItemPro
           </Text>
         )}
         {message.content && <Text>{message.content}</Text>}
+        {!message.content && message.encryptedContent && (
+          <Text>{decryptedContent ?? "Decrypting..."}</Text>
+        )}
         {message.attachments?.length ? (
           <VStack align="start" spacing={1}>
             {message.attachments.map((att) => (

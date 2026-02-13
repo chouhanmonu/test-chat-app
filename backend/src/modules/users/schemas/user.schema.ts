@@ -11,6 +11,9 @@ export class UserDevice {
   @Prop()
   deviceName?: string;
 
+  @Prop({ required: true })
+  publicKey!: string;
+
   @Prop({ default: Date.now })
   registeredAt!: Date;
 

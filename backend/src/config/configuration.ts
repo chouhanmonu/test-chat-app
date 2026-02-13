@@ -6,7 +6,7 @@ export default () => ({
   redisUrl: process.env.REDIS_URL ?? 'redis://localhost:6379',
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET ?? 'change_me',
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET ?? 'change_me',
-  jwtAccessTtl: process.env.JWT_ACCESS_TTL ?? '900s',
+  jwtAccessTtl: process.env.JWT_ACCESS_TTL ?? '1d',
   jwtRefreshTtl: process.env.JWT_REFRESH_TTL ?? '7d',
   throttleTtl: parseInt(process.env.THROTTLE_TTL ?? '60', 10),
   throttleLimit: parseInt(process.env.THROTTLE_LIMIT ?? '120', 10),

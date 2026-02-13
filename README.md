@@ -101,6 +101,10 @@ Frontend: `http://localhost:8080`
 - `DELETE /users/favourites`
 - `GET /rooms`
 - `POST /rooms`
+- `POST /rooms/dm-by-email`
+- `POST /rooms/group-by-email`
+- `GET /rooms/:roomId/e2ee`
+- `PATCH /rooms/:roomId/e2ee`
 - `POST /rooms/:roomId/members`
 - `PATCH /rooms/:roomId/roles`
 - `PATCH /rooms/:roomId/mute`
@@ -113,6 +117,11 @@ Frontend: `http://localhost:8080`
 - `POST /messages/star`
 - `POST /messages/unstar`
 - `POST /attachments/presign`
+
+## Security + E2EE notes
+- Messages support `encryptedContent` and `encryptionMetadata` fields.
+- The backend does not attempt to decrypt content and only stores encrypted payloads.
+- Clients should handle key management per device, rotating room secrets on membership changes.
 
 ## Real-time events
 - `message:send` → emits `message:new`

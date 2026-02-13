@@ -25,6 +25,10 @@ export class UsersService {
     return this.userModel.findById(userId).exec();
   }
 
+  async findByIds(userIds: string[]) {
+    return this.userModel.find({ _id: { $in: userIds } }).exec();
+  }
+
   async updateProfile(userId: string, dto: UpdateProfileDto) {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException('User not found');
