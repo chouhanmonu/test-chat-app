@@ -255,6 +255,7 @@ export const ChatPage = () => {
       attachments.push({
         fileName: file.name,
         url: presign.fileUrl,
+        key: presign.key,
         mimeType: file.type,
         size: file.size,
       });

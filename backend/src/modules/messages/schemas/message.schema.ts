@@ -20,6 +20,9 @@ export class MessageAttachment {
   @Prop({ required: true })
   url!: string;
 
+  @Prop()
+  key?: string;
+
   @Prop({ required: true })
   fileName!: string;
 

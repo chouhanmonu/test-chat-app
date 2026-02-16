@@ -1,4 +1,6 @@
 import { Box, Button, HStack, Text, VStack, Wrap, WrapItem, Badge } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { signDownload } from '../api/attachments';
 
 export type Message = {
   _id: string;
@@ -6,7 +8,7 @@ export type Message = {
   content?: string;
   encryptedContent?: string;
   encryptionMetadata?: string;
-  attachments?: { fileName: string; url: string }[];
+  attachments?: { fileName: string; url: string; key?: string; mimeType?: string }[];
   reactions?: { userId: string; emoji: string }[];
   replyingToMessageId?: string;
   forwardedFromMessageId?: string;
@@ -27,6 +29,29 @@ export const MessageItem = ({
   onReply,
   decryptedContent,
 }: MessageItemProps) => {
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const run = async () => {
+      const images = message.attachments?.filter((att) => att.mimeType?.startsWith('image/')) ?? [];
+      const updates: Record<string, string> = {};
+      for (const att of images) {
+        const key = att.key || att.url.split('/').pop() || att.url;
+        if (signedUrls[key]) continue;
+        try {
+          const signed = await signDownload({ key });
+          updates[key] = signed.downloadUrl;
+        } catch {
+          // ignore
+        }
+      }
+      if (Object.keys(updates).length > 0) {
+        setSignedUrls((prev) => ({ ...prev, ...updates }));
+      }
+    };
+    run();
+  }, [message.attachments, signedUrls]);
+
   return (
     <Box
       alignSelf={isOwn ? 'flex-end' : 'flex-start'}
@@ -50,12 +75,29 @@ export const MessageItem = ({
           <Text>{decryptedContent ?? "Decrypting..."}</Text>
         )}
         {message.attachments?.length ? (
-          <VStack align="start" spacing={1}>
-            {message.attachments.map((att) => (
-              <Text key={att.url} fontSize="sm" color="blue.200">
-                {att.fileName}
-              </Text>
-            ))}
+          <VStack align="start" spacing={2}>
+            {message.attachments.map((att) => {
+              const isImage = att.mimeType?.startsWith("image/");
+              if (isImage) {
+                const key = att.key || att.url.split('/').pop() || att.url;
+                const signedUrl = signedUrls[key];
+                return (
+                  <Box key={att.url} borderRadius="12px" overflow="hidden" bg="blackAlpha.400">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={signedUrl ?? att.url}
+                      alt={att.fileName}
+                      style={{ maxWidth: "220px", display: "block" }}
+                    />
+                  </Box>
+                );
+              }
+              return (
+                <Text key={att.url} fontSize="sm" color="blue.200">
+                  {att.fileName}
+                </Text>
+              );
+            })}
           </VStack>
         ) : null}
         {message.reactions?.length ? (

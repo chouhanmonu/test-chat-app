@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuid } from 'uuid';
 
@@ -34,5 +34,12 @@ export class AttachmentsService {
     const fileUrl = `${this.config.get<string>('doSpacesEndpoint')}/${bucket}/${key}`;
 
     return { uploadUrl, fileUrl, key };
+  }
+
+  async createPresignedDownload(key: string) {
+    const bucket = this.config.get<string>('doSpacesBucket');
+    const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+    const downloadUrl = await getSignedUrl(this.client, command, { expiresIn: 60 * 10 });
+    return { downloadUrl, key };
   }
 }

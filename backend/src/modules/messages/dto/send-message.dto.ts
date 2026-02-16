@@ -8,6 +8,10 @@ class AttachmentDto {
   @IsString()
   url: string;
 
+  @IsOptional()
+  @IsString()
+  key?: string;
+
   @IsString()
   fileName: string;
 

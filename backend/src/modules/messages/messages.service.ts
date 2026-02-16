@@ -103,4 +103,11 @@ export class MessagesService {
     );
     return { success: true };
   }
+
+  async canAccessAttachment(userId: string, key: string) {
+    const message = await this.messageModel.findOne({ 'attachments.key': key }).exec();
+    if (!message) return false;
+    await this.ensureMember(message.roomId.toString(), userId);
+    return true;
+  }
 }
