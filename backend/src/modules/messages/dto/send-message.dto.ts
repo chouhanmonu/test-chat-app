@@ -8,9 +8,12 @@ class AttachmentDto {
   @IsString()
   url: string;
 
-  @IsOptional()
   @IsString()
-  key?: string;
+  key: string;
+
+  @IsOptional()
+  @IsMongoId()
+  attachmentId?: string;
 
   @IsString()
   fileName: string;

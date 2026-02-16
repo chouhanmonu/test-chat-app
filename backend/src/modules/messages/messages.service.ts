@@ -7,6 +7,8 @@ import { Room, RoomDocument } from '../rooms/schemas/room.schema';
 import { SendMessageDto } from './dto/send-message.dto';
 import { ReactMessageDto } from './dto/react-message.dto';
 import { SearchMessageDto } from './dto/search.dto';
+import { AttachmentsService } from '../attachments/attachments.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MessagesService {
@@ -14,7 +16,9 @@ export class MessagesService {
     @InjectModel(Message.name) private readonly messageModel: Model<MessageDocument>,
     @InjectModel(ChatUserStatus.name)
     private readonly statusModel: Model<ChatUserStatusDocument>,
-    @InjectModel(Room.name) private readonly roomModel: Model<RoomDocument>
+    @InjectModel(Room.name) private readonly roomModel: Model<RoomDocument>,
+    private readonly attachmentsService: AttachmentsService,
+    private readonly config: ConfigService
   ) {}
 
   private async ensureMember(roomId: string, userId: string) {
@@ -42,6 +46,29 @@ export class MessagesService {
         : undefined,
       attachments: dto.attachments ?? []
     });
+
+    if (dto.attachments?.length) {
+      const bucket = this.config.get<string>('doSpacesBucket');
+      const updatedAttachments = [];
+      for (const attachment of dto.attachments) {
+        const record = await this.attachmentsService.createAttachmentRecord({
+          key: attachment.key,
+          bucket,
+          mimeType: attachment.mimeType,
+          fileName: attachment.fileName,
+          size: attachment.size ?? 0,
+          uploaderId: userId,
+          roomId: dto.roomId,
+          messageId: message._id.toString()
+        });
+        updatedAttachments.push({
+          ...attachment,
+          attachmentId: record._id
+        });
+      }
+      message.attachments = updatedAttachments as any;
+      await message.save();
+    }
 
     room.lastMessageId = message._id;
     room.lastActivityAt = new Date();
@@ -102,12 +129,5 @@ export class MessagesService {
       { upsert: true }
     );
     return { success: true };
-  }
-
-  async canAccessAttachment(userId: string, key: string) {
-    const message = await this.messageModel.findOne({ 'attachments.key': key }).exec();
-    if (!message) return false;
-    await this.ensureMember(message.roomId.toString(), userId);
-    return true;
   }
 }

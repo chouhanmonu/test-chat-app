@@ -117,7 +117,7 @@ Frontend: `http://localhost:8080`
 - `POST /messages/star`
 - `POST /messages/unstar`
 - `POST /attachments/presign`
-- `POST /attachments/sign-get`
+- `POST /attachments/sign-get` (body: `{ attachmentId }`)
 
 ## Security + E2EE notes
 - Messages support `encryptedContent` and `encryptionMetadata` fields.

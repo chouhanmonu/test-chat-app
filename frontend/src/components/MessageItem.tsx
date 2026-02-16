@@ -8,7 +8,13 @@ export type Message = {
   content?: string;
   encryptedContent?: string;
   encryptionMetadata?: string;
-  attachments?: { fileName: string; url: string; key?: string; mimeType?: string }[];
+  attachments?: {
+    fileName: string;
+    url: string;
+    key?: string;
+    attachmentId?: string;
+    mimeType?: string;
+  }[];
   reactions?: { userId: string; emoji: string }[];
   replyingToMessageId?: string;
   forwardedFromMessageId?: string;
@@ -36,11 +42,12 @@ export const MessageItem = ({
       const images = message.attachments?.filter((att) => att.mimeType?.startsWith('image/')) ?? [];
       const updates: Record<string, string> = {};
       for (const att of images) {
-        const key = att.key || att.url.split('/').pop() || att.url;
-        if (signedUrls[key]) continue;
+        const id = att.attachmentId || att.key || att.url.split('/').pop() || att.url;
+        if (signedUrls[id]) continue;
         try {
-          const signed = await signDownload({ key });
-          updates[key] = signed.downloadUrl;
+          if (!att.attachmentId) continue;
+          const signed = await signDownload({ attachmentId: att.attachmentId });
+          updates[id] = signed.downloadUrl;
         } catch {
           // ignore
         }
@@ -79,8 +86,8 @@ export const MessageItem = ({
             {message.attachments.map((att) => {
               const isImage = att.mimeType?.startsWith("image/");
               if (isImage) {
-                const key = att.key || att.url.split('/').pop() || att.url;
-                const signedUrl = signedUrls[key];
+                const id = att.attachmentId || att.key || att.url.split('/').pop() || att.url;
+                const signedUrl = signedUrls[id];
                 return (
                   <Box key={att.url} borderRadius="12px" overflow="hidden" bg="blackAlpha.400">
                     {/* eslint-disable-next-line @next/next/no-img-element */}

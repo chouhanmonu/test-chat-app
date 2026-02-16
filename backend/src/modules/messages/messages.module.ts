@@ -6,6 +6,7 @@ import { Room, RoomSchema } from '../rooms/schemas/room.schema';
 import { MessagesService } from './messages.service';
 import { MessagesController } from './messages.controller';
 import { UsersModule } from '../users/users.module';
+import { AttachmentsModule } from '../attachments/attachments.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { UsersModule } from '../users/users.module';
       { name: ChatUserStatus.name, schema: ChatUserStatusSchema },
       { name: Room.name, schema: RoomSchema }
     ]),
-    UsersModule
+    UsersModule,
+    AttachmentsModule
   ],
   providers: [MessagesService],
   controllers: [MessagesController],

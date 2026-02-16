@@ -5,7 +5,7 @@ export const presignUpload = async (payload: { fileName: string; mimeType: strin
   return data as { uploadUrl: string; fileUrl: string; key: string };
 };
 
-export const signDownload = async (payload: { key: string }) => {
+export const signDownload = async (payload: { attachmentId: string }) => {
   const { data } = await api.post('/attachments/sign-get', payload);
-  return data as { downloadUrl: string; key: string };
+  return data as { downloadUrl: string; attachmentId: string };
 };

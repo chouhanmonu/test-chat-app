@@ -20,8 +20,11 @@ export class MessageAttachment {
   @Prop({ required: true })
   url!: string;
 
-  @Prop()
-  key?: string;
+  @Prop({ required: true })
+  key!: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'Attachment' })
+  attachmentId?: Types.ObjectId;
 
   @Prop({ required: true })
   fileName!: string;
