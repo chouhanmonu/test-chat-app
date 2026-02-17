@@ -1,6 +1,7 @@
-# Chat App (Uing OpenAI Codex)
+# Test Chat App (Uing OpenAI Codex)
 
 Full-stack real-time chat application with NestJS + MongoDB backend and React + Vite frontend.
+(Made for quickly testing the app flow keeping security in mind)
 
 ## Highlights
 
