@@ -1,4 +1,4 @@
-# Chat App (Uing OpenAI codex)
+# Chat App (Uing OpenAI Codex)
 
 Full-stack real-time chat application with NestJS + MongoDB backend and React + Vite frontend.
 
