@@ -1,8 +1,9 @@
-# Chat App
+# Chat App (Made to test the app flow completely using OpenAI codex)
 
 Full-stack real-time chat application with NestJS + MongoDB backend and React + Vite frontend.
 
 ## Highlights
+
 - Email login + registration with JWT + refresh tokens
 - DM and group chats with roles (admin/member)
 - Reactions, replies, forwards, starred messages
@@ -14,6 +15,7 @@ Full-stack real-time chat application with NestJS + MongoDB backend and React + 
 - Dockerized backend + frontend
 
 ## Project structure
+
 ```
 /backend
 /frontend
@@ -23,6 +25,7 @@ Full-stack real-time chat application with NestJS + MongoDB backend and React + 
 ## Backend
 
 ### Setup
+
 ```
 cd backend
 cp .env.example .env
@@ -31,6 +34,7 @@ npm run start:dev
 ```
 
 ### Env vars
+
 - `PORT`
 - `APP_URL`
 - `MONGO_URI`
@@ -51,11 +55,13 @@ npm run start:dev
 - `MAIL_FROM`
 
 ### Tests
+
 ```
 npm run test
 ```
 
 ### Docker
+
 ```
 docker build -t chat-backend ./backend
 ```
@@ -63,6 +69,7 @@ docker build -t chat-backend ./backend
 ## Frontend
 
 ### Setup
+
 ```
 cd frontend
 npm install
@@ -70,24 +77,30 @@ npm run dev
 ```
 
 ### Env vars
+
 Create a `.env` file in `frontend`:
+
 ```
 VITE_API_URL=http://localhost:4000
 ```
 
 ### Docker
+
 ```
 docker build -t chat-frontend ./frontend
 ```
 
 ## Docker Compose (local)
+
 ```
 docker compose up --build
 ```
+
 Backend: `http://localhost:4000`
 Frontend: `http://localhost:8080`
 
 ## API overview
+
 - `POST /auth/register`
 - `POST /auth/login`
 - `POST /auth/refresh`
@@ -120,11 +133,13 @@ Frontend: `http://localhost:8080`
 - `POST /attachments/sign-get` (body: `{ attachmentId }`)
 
 ## Security + E2EE notes
+
 - Messages support `encryptedContent` and `encryptionMetadata` fields.
 - The backend does not attempt to decrypt content and only stores encrypted payloads.
 - Clients should handle key management per device, rotating room secrets on membership changes.
 
 ## Real-time events
+
 - `message:send` → emits `message:new`
 - `message:react` → emits `message:reaction`
 - `message:seen` → emits `message:seen`
